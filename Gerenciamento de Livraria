@@ -1,0 +1,201 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+ 
+#define TAM 50 
+ 
+typedef struct { 
+    int codigo; 
+    char titulo[30]; 
+    char autor[30]; 
+    char editora[30]; 
+    int ano_public; 
+    float preco; 
+} info_liv; 
+ 
+int cadastrarlivro(info_liv livros[], int quant_liv); 
+void consultarlivro(info_liv livros[], int quant_liv); 
+void consultarPreco(info_liv livros[], int quant_liv); 
+void consultarAutor(info_liv livros[], int quant_liv); 
+void relatorioLivros(info_liv livros[], int quant_liv); 
+ 
+int main() { 
+    int menu; 
+    int quant_liv = 0; 
+    info_liv livros[TAM]; 
+ 
+    do { 
+        printf("Escolha uma opção:\n"); 
+        printf("1. Cadastrar Livro\n"); 
+        printf("2. Consultar Livro por Código ou Título\n"); 
+        printf("3. Consultar Livros com Preço Inferior\n"); 
+        printf("4. Consultar Número de Livros por Autor\n"); 
+        printf("5. Relatório de Livros\n"); 
+        printf("6. Sair\n"); 
+        scanf("%d", &menu); 
+        getchar();  
+ 
+        switch (menu) { 
+            case 1: 
+                quant_liv = cadastrarlivro(livros, quant_liv); 
+                break; 
+            case 2: 
+                consultarlivro(livros, quant_liv); 
+                break; 
+            case 3: 
+                consultarPreco(livros, quant_liv); 
+                break; 
+            case 4: 
+                consultarAutor(livros, quant_liv); 
+                break; 
+            case 5: 
+                relatorioLivros(livros, quant_liv); 
+                break; 
+            case 6: 
+                printf("Fim do programa\n"); 
+                break; 
+            default: 
+                printf("Opção inválida! Tente novamente.\n"); 
+        } 
+ 
+    } while (menu != 6); 
+ 
+    return 0; 
+} 
+ 
+// Cadastro de livros 
+int cadastrarlivro(info_liv livros[], int quant_liv) { 
+    int codigo_livro; 
+ 
+    if (quant_liv < TAM) { 
+        printf("Digite o código: "); 
+        scanf("%d", &codigo_livro); 
+        getchar(); 
+ 
+        for (int i = 0; i < quant_liv; i++) { 
+            if (livros[i].codigo == codigo_livro) { 
+                printf("Livro já cadastrado!\n"); 
+                return quant_liv; 
+            } 
+        } 
+ 
+        livros[quant_liv].codigo = codigo_livro; 
+        printf("Digite o título: "); 
+        gets(livros[quant_liv].titulo); // Lê o título 
+        printf("Digite o autor: "); 
+        gets(livros[quant_liv].autor); 
+        printf("Digite a editora: "); 
+        gets(livros[quant_liv].editora); 
+        printf("Digite o ano de publicação: "); 
+        scanf("%d", &livros[quant_liv].ano_public); 
+        printf("Digite o preço: "); 
+        scanf("%f", &livros[quant_liv].preco); 
+        getchar();  
+ 
+        quant_liv++; 
+    } else { 
+        printf("Limite de livros excedido!\n"); 
+    } 
+ 
+    return quant_liv; 
+} 
+ 
+// Consulta por código e título 
+void consultarlivro(info_liv livros[], int quant_liv) { 
+    int codigo; 
+    char titulo[30]; 
+    int opcao; 
+ 
+    printf("Consultar por:\n"); 
+    printf("1. Código\n"); 
+    printf("2. Título\n"); 
+    scanf("%d", &opcao); 
+    getchar();  
+ 
+    if (opcao == 1) { 
+        printf("Digite o código: "); 
+        scanf("%d", &codigo); 
+        getchar();  
+        for (int i = 0; i < quant_liv; i++) { 
+            if (livros[i].codigo == codigo) { 
+                printf("Código: %d\n", livros[i].codigo); 
+                printf("Título: %s\n", livros[i].titulo); 
+                printf("Autor: %s\n", livros[i].autor); 
+                printf("Editora: %s\n", livros[i].editora); 
+                printf("Ano de Publicação: %d\n", livros[i].ano_public); 
+                printf("Preço: %.2f\n", livros[i].preco); 
+                return; 
+            } 
+        } 
+        printf("Livro não encontrado.\n"); 
+    } else if (opcao == 2) { 
+        printf("Digite o título: "); 
+        gets(titulo);  
+        for (int i = 0; i < quant_liv; i++) { 
+            if (strcmp(livros[i].titulo, titulo) == 0) { 
+                printf("Código: %d\n", livros[i].codigo); 
+                printf("Título: %s\n", livros[i].titulo); 
+                printf("Autor: %s\n", livros[i].autor); 
+                printf("Editora: %s\n", livros[i].editora); 
+                printf("Ano de Publicação: %d\n", livros[i].ano_public); 
+                printf("Preço: %.2f\n", livros[i].preco); 
+                return; 
+            } 
+        } 
+        printf("Livro não encontrado.\n"); 
+    } else { 
+        printf("Opção inválida!\n"); 
+    } 
+} 
+ 
+// Consulta por Preço 
+void consultarPreco(info_liv livros[], int quant_liv) { 
+    float preco; 
+    printf("Digite o preço: "); 
+    scanf("%f", &preco); 
+    getchar();  
+ 
+    int achou = 0; 
+    for (int i = 0; i < quant_liv; i++) { 
+        if (livros[i].preco < preco) { 
+            printf("Código: %d\n", livros[i].codigo); 
+            printf("Título: %s\n", livros[i].titulo); 
+            printf("Autor: %s\n", livros[i].autor); 
+            printf("Editora: %s\n", livros[i].editora); 
+            printf("Ano de Publicação: %d\n", livros[i].ano_public); 
+            printf("Preço: %.2f\n", livros[i].preco); 
+            achou = 1; 
+        } 
+    } 
+ 
+    if (!achou) { 
+        printf("Nenhum livro encontrado com preço inferior.\n"); 
+    } 
+} 
+ 
+// Consulta por Autor 
+void consultarAutor(info_liv livros[], int quant_liv) { 
+    char autor[30]; 
+    printf("Digite o autor: "); 
+    gets(autor);  
+ 
+    int cont = 0; 
+    for (int i = 0; i < quant_liv; i++) { 
+        if (strcmp(livros[i].autor, autor) == 0) { 
+            cont++; 
+        } 
+    } 
+    printf("Número de livros do autor %s: %d\n", autor, cont); 
+} 
+ 
+// Relatório de Livros 
+void relatorioLivros(info_liv livros[], int quant_liv) { 
+    for (int i = 0; i < quant_liv; i++) { 
+        printf("Código: %d\n", livros[i].codigo); 
+        printf("Título: %s\n", livros[i].titulo); 
+        printf("Autor: %s\n", livros[i].autor); 
+        printf("Editora: %s\n", livros[i].editora); 
+        printf("Ano de Publicação: %d\n", livros[i].ano_public); 
+        printf("Preço: %.2f\n", livros[i].preco); 
+    } 
+}
