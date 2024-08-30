@@ -1,0 +1,192 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+ 
+#define TAM 3 
+ 
+typedef struct { 
+    char nome[30]; 
+    int num_conta; 
+    float saldo; 
+} Cliente; 
+ 
+int cadastrarConta(Cliente contas[], int quant_contas); 
+void depositar(Cliente contas[], int quant_contas); 
+void sacar(Cliente contas[], int quant_contas); 
+void consultarContas(Cliente contas[], int quant_contas); 
+ 
+int main() { 
+    int menu; 
+    int quant_contas = 0; 
+    Cliente contas[TAM]; 
+ 
+    do { 
+        printf("Menu:\n"); 
+        printf("1. Cadastrar Conta\n"); 
+        printf("2. Depósito\n"); 
+        printf("3. Saque\n"); 
+        printf("4. Consulta\n"); 
+        printf("5. Sair\n"); 
+        scanf("%d", &menu); 
+ 
+        switch (menu) { 
+        case 1: 
+            quant_contas = cadastrarConta(contas, quant_contas); 
+            break; 
+ 
+        case 2: 
+            depositar(contas, quant_contas); 
+            break; 
+ 
+        case 3: 
+            sacar(contas, quant_contas); 
+            break; 
+ 
+        case 4: 
+            consultarContas(contas, quant_contas); 
+            break; 
+ 
+        case 5: 
+            printf("Fim do programa\n"); 
+            break; 
+ 
+        default: 
+            printf("Opção inválida! Tente novamente.\n"); 
+        } 
+ 
+    } while (menu != 5); 
+ 
+    return 0; 
+} 
+ 
+// Função para cadastrar conta 
+int cadastrarConta(Cliente contas[], int quant_contas) { 
+    if (quant_contas < TAM) { 
+        int num_conta; 
+        char nome[30]; 
+        int achou = 0; 
+ 
+        printf("Informe o seu nome: "); 
+        scanf("%s", nome); 
+        printf("Informe o Número: "); 
+        scanf("%d", &num_conta); 
+ 
+        for (int i = 0; i < quant_contas; i++) { 
+            if (contas[i].num_conta == num_conta) { 
+                printf("Número da conta já cadastrado!\n"); 
+                return quant_contas; 
+            } 
+        } 
+ 
+        strcpy(contas[quant_contas].nome, nome); 
+        contas[quant_contas].num_conta = num_conta; 
+        contas[quant_contas].saldo = 0; 
+        quant_contas++; 
+    } else { 
+        printf("Limite de contas excedido!\n"); 
+    } 
+    return quant_contas; 
+} 
+ 
+// Função para depositar 
+void depositar(Cliente contas[], int quant_contas) { 
+    int num_conta; 
+    float deposito; 
+    int achou = 0;  
+ 
+    printf("Informe o número da conta: "); 
+    scanf("%d", &num_conta); 
+ 
+    for (int i = 0; i < quant_contas; i++) { 
+        if (contas[i].num_conta == num_conta) { 
+            printf("Saldo: %.2f\n", contas[i].saldo); 
+            printf("Informe o valor do depósito: "); 
+            scanf("%f", &deposito); 
+ 
+            if (deposito > 0) { 
+                contas[i].saldo += deposito;  
+                printf("Saldo: %.2f\n", contas[i].saldo); 
+            } else { 
+                printf("Valor indisponivel\n"); 
+            } 
+            achou = 1; 
+            break;  
+        } 
+    } 
+ 
+    if (!achou) { 
+        printf("Conta não encontrada!\n"); 
+    } 
+} 
+ 
+// Função para sacar 
+void sacar(Cliente contas[], int quant_contas) { 
+    int num_conta; 
+    float valor; 
+ 
+    printf("Informe o número da conta: "); 
+    scanf("%d", &num_conta); 
+ 
+    for (int i = 0; i < quant_contas; i++) { 
+        if (contas[i].num_conta == num_conta) { 
+            printf("Saldo: %.2f\n", contas[i].saldo); 
+            printf("Informe o valor a ser sacado: "); 
+            scanf("%f", &valor); 
+ 
+            if (valor > 0 && valor <= contas[i].saldo) { 
+                contas[i].saldo -= valor; 
+                printf("Saque realizado com sucesso!\nSaldo atual: %.2f\n", contas[i].saldo); 
+            }else { 
+                printf("Saldo insuficiente.\n"); 
+            } 
+            return; 
+        } 
+    } 
+    printf("Conta não encontrada.\n"); 
+} 
+ 
+// Função para consultar conta 
+void consultarContas(Cliente contas[], int quant_contas) { 
+    int opcao; 
+    printf("Consultar por:\n"); 
+    printf("1. Número da conta\n"); 
+    printf("2. Nome\n"); 
+    scanf("%d", &opcao); 
+ 
+    switch (opcao) { 
+        case 1: 
+            { 
+                int numero; 
+                printf("Informe o número da sua conta: "); 
+                scanf("%d", &numero); 
+                for (int i = 0; i < quant_contas; i++) { 
+                    if (contas[i].num_conta == numero) { 
+                        printf("Nome: %s\n", contas[i].nome); 
+                        printf("Saldo: %.2f\n", contas[i].saldo); 
+                        return; 
+                    } 
+                } 
+                printf("Conta não encontrada.\n"); 
+            } 
+            break; 
+ 
+        case 2: 
+            { 
+                char nome_cliente[30]; 
+                printf("Informe seu nome: "); 
+                scanf("%s", nome_cliente); 
+                for (int i = 0; i < quant_contas; i++) { 
+                    if (strcmp(contas[i].nome, nome_cliente) == 0) { 
+                        printf("Número da conta: %d\n", contas[i].num_conta); 
+                        printf("Saldo: %.2f\n", contas[i].saldo); 
+                        return; 
+                    } 
+                } 
+                printf("Conta não encontrada.\n"); 
+            } 
+            break; 
+ 
+        default: 
+            printf("Opção inválida! Tente novamente.\n"); 
+    } 
+}
